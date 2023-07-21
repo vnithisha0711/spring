@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<bean id="employee" class="com.cg.training.model.Employee" autowire="byType">
+	<property name="id" value="101" />
+	<property name="name" value="Admin" />
+	<property name="username" value="superadmin" />
+	<property name="password" value="admin123" />
+	<property name="age" value="25" />
+	<!-- <property name="address" ref="addr" />-->
+	<property name="phone" value="9876543598" />
+	<property name="salary" value="10000" />
+</bean>
+
+<bean id="addr" class="com.cg.training.model.Address">
+	<property name="id" value="2001" />
+	<property name="houseNumber" value="15/21B" />
+	<property name="street" value="Street No 6" />
+	<property name="city" value="Bangalore" />
+	<property name="state" value="Karnataka" />
+	<property name="country" value="India" />
+	<property name="pin" value="560021" />
+	
+</bean>
+
+</beans>

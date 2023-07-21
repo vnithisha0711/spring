@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<bean id="employee" class="com.cg.training.model.Employee">
+	<constructor-arg name="id" value="101" />
+	<constructor-arg name="name" value="Admin" />
+	<constructor-arg name="username" value="superadmin" />
+	<constructor-arg name="password" value="admin123" />
+	<constructor-arg name="age" value="25" />
+	<constructor-arg name="address" ref="addr" />
+	<constructor-arg name="phone" value="9876543598" />
+	<constructor-arg name="salary" value="10000" />
+</bean>
+
+<bean id="addr" class="com.cg.training.model.Address">
+	<constructor-arg name="id" value="2001" />
+	<constructor-arg name="houseNumber" value="15/21B" />
+	<constructor-arg name="street" value="Street No 6" />
+	<constructor-arg name="city" value="Bangalore" />
+	<constructor-arg name="state" value="Karnataka" />
+	<constructor-arg name="country" value="India" />
+	<constructor-arg name="pin" value="560021" />
+	
+</bean>
+
+</beans>
