@@ -1,0 +1,35 @@
+
+//singleton implementation class
+
+class Singleton{
+     private static Singleton single_instance = null;
+public String s;
+private Singleton(){
+     s="I am a string";
+     }
+     public static Singleton Singleton()
+         if(single_instance == null){
+            single_instance = new Singleton();
+         }
+         return single_instance;
+     }
+}
+class GFG{
+     public static void main(String args[]){
+           Singleton a = Singleton.Singleton();
+           Singleton b = Singleton.Singleton();
+           Singleton c = Singleton.Singleton();
+
+           a.s = (a.s).toUpperCase();
+           System.out.println("String from a is " +a.s);
+           System.out.println("String from b is " +b.s);
+           System.out.println("String from c is " +c.s);
+           System.out.println("\n");
+          
+           c.s = (c.s).toLowerCase();
+           System.out.println("String from a is " +a.s);
+           System.out.println("String from b is " +b.s);
+           System.out.println("String from c is " +c.s);
+     }
+}
+         

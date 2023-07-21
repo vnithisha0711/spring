@@ -1,0 +1,237 @@
+
+//EmployeeBoundaryTest
+
+package com.cg.employees.boundary;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.cg.employees.testutils.MasterData;
+import com.cg.training.employees.dto.EmployeeDTO;
+
+@SpringBootTest
+class EmployeeBoundaryTest {
+
+	private static Validator validator;
+	
+	@BeforeAll
+	public static void setUp() {
+		ValidatorFactory factory=Validation.buildDefaultValidatorFactory();
+		validator=factory.getValidator();
+	}
+	
+	@Test
+	void testEmployeeAddressNotNull() throws Exception {
+		EmployeeDTO employeeDTO=MasterData.getEmployeeDTO();
+		employeeDTO.setAddress("");
+		Set<ConstraintViolation<EmployeeDTO>> violations=validator.validate(employeeDTO);
+		assertEquals(true, !violations.isEmpty()? true:false);
+	}
+	
+	@Test
+	void testEmployeePasswordNotNull() throws Exception {
+		EmployeeDTO employeeDTO=MasterData.getEmployeeDTO();
+		employeeDTO.setPassword("");
+		Set<ConstraintViolation<EmployeeDTO>> violations=validator.validate(employeeDTO);
+		assertEquals(true, !violations.isEmpty()? true:false);
+	}
+	
+	@Test
+	void testEmployeePasswordLengthMinFive() throws Exception {
+		EmployeeDTO employeeDTO=MasterData.getEmployeeDTO();
+		employeeDTO.setPassword("abc");
+		Set<ConstraintViolation<EmployeeDTO>> violations=validator.validate(employeeDTO);
+		assertEquals(true, !violations.isEmpty()? true:false);
+	}
+
+	@Test
+	void testEmployeePasswordLengthMaxFifteen() throws Exception {
+		EmployeeDTO employeeDTO=MasterData.getEmployeeDTO();
+		String password="";
+		for(int i=0;i<120;i++) {
+			password.concat("A");
+		}
+		employeeDTO.setPassword(password);
+		Set<ConstraintViolation<EmployeeDTO>> violations=validator.validate(employeeDTO);
+		assertEquals(true, !violations.isEmpty()? true:false);
+	}
+	
+}
+-------------------------
+
+//EmployeeExceptionTest
+
+package com.cg.employees.exceptions;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.cg.employees.testutils.MasterData;
+import com.cg.training.employees.controller.EmployeeController;
+import com.cg.training.employees.dto.EmployeeDTO;
+import com.cg.training.employees.service.EmployeeService;
+
+@WebMvcTest(EmployeeController.class)
+@AutoConfigureMockMvc
+class EmployeeExceptionTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@MockBean
+	private EmployeeService employeeService;
+
+	@Test
+	public void testSaveEmployeeInvalidDataException() throws Exception{
+		EmployeeDTO employeeDTO=MasterData.getEmployeeDTO();
+		EmployeeDTO savedemployeeDTO=MasterData.getEmployeeDTO();
+		employeeDTO.setAge(34);
+		when(this.employeeService.saveEmployee(employeeDTO)).thenReturn(savedemployeeDTO);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/api/employees").content(MasterData.asJsonString(employeeDTO)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+
+		assertEquals(true, result.getResponse().getStatus()==HttpStatus.BAD_REQUEST.value() ? true : false);
+
+	}
+
+}
+-------------------------
+
+//EmployeeControllerTest
+
+package com.cg.employees.functional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.cg.employees.testutils.MasterData;
+import com.cg.training.employees.controller.EmployeeController;
+import com.cg.training.employees.dto.EmployeeDTO;
+import com.cg.training.employees.service.EmployeeService;
+
+@WebMvcTest(EmployeeController.class)
+@AutoConfigureMockMvc
+class EmployeeControllerTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@MockBean
+	private EmployeeService employeeService;
+
+	@Test
+	public void testSaveEmployee() throws Exception{
+		EmployeeDTO employeeDTO=MasterData.getEmployeeDTO();
+		EmployeeDTO savedemployeeDTO=MasterData.getEmployeeDTO();
+		
+		when(this.employeeService.saveEmployee(employeeDTO)).thenReturn(savedemployeeDTO);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/api/employees").content(MasterData.asJsonString(employeeDTO)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+
+		assertEquals(true, result.getResponse().getContentAsString().contentEquals(MasterData.asJsonString(savedemployeeDTO)) ? true : false);
+
+	}
+
+}
+------------------------
+
+//MasterData
+
+package com.cg.employees.testutils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cg.training.employees.dto.EmployeeDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class MasterData {
+	
+	public static EmployeeDTO getEmployeeDTO() {
+		EmployeeDTO dto=new EmployeeDTO();
+		dto.setId(1);
+		dto.setAddress("Banglore");
+		dto.setAge(25);
+		dto.setDepartment("management");
+		dto.setName("Admin");
+		dto.setPassword("admin@123");
+		dto.setPhone(7654897654L);
+		dto.setSalary(87000);
+		return dto;
+				
+	}
+
+	public static List<EmployeeDTO> getEmployeeDTOList(){
+	    List<EmployeeDTO> list=new ArrayList<>();
+		EmployeeDTO dto=new EmployeeDTO();
+		dto.setId(1);
+		dto.setAddress("Banglore");
+		dto.setAge(25);
+		dto.setDepartment("management");
+		dto.setName("Admin");
+		dto.setPassword("admin@123");
+		dto.setPhone(7654897654L);
+		dto.setSalary(87000);
+		list.add(dto);
+		dto=new EmployeeDTO();
+		dto.setId(2);
+		dto.setAddress("Pune");
+		dto.setAge(25);
+		dto.setDepartment("IT");
+		dto.setName("Admin");
+		dto.setPassword("dba@123");
+		dto.setPhone(7654897654L);
+		dto.setSalary(87000);
+		list.add(dto);
+		return list;
+	}
+	
+	public static String asJsonString(final Object obj) {
+		try {
+			final ObjectMapper mapper=new ObjectMapper();
+			final String jsoncontent=mapper.writeValueAsString(obj);
+			return jsoncontent;
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+}
+---------------------------

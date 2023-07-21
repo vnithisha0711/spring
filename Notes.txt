@@ -1,0 +1,5 @@
+
+repository:
+------------
+       -to communicate with database
+       -managing the data in a Spring boot appln

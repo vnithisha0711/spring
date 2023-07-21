@@ -1,0 +1,62 @@
+class Activity{
+  //Implement Activity class here..
+  String string1;
+  String string2;
+  String operator;
+
+  Activity(String string1,String string2,String operator ){
+    this.string1=string1;
+    this.string2=string2;
+    this.operator=operator;
+  }
+}
+
+
+
+public class Source {
+  //Implement the two function given in description in here...
+  public String handleException(Activity a){
+    if(a.string1==null || a.string2==null){
+      try{
+        throw new NullPointerException();
+      }
+      finally{
+        return "Null values found";
+      }
+    }
+    if(!(a.operator.equals("+")||a.operator.equals("-"))){
+      try{
+        throw new Exception();
+      }
+      finally{
+        return "a.operator";
+      }
+    }
+    return "No Exception Found";
+  }
+  String doOperation(Activity a){
+    switch(a.operator){
+      case "+": return(a.string1+a.string2);
+      case "-": if(a.string1 !=null||a.string2 !=null){
+        int index=a.string1.indexOf(a.string2);
+        if(index!=-1){
+          StringBuffer b=new StringBuffer(a.string1);
+          b.delete(index,a.string2.length());
+          return b.toString();
+        }
+        else{
+          return a.string1;
+        }
+      }
+      else if(a.string1 != null){
+        return a.string1;
+      }
+
+    }
+    return "";
+  }
+  
+	public static void main(String args[] ) throws Exception {
+    //Write your own main to check the program...
+	}
+}

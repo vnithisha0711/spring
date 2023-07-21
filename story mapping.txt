@@ -1,0 +1,10 @@
+The case study specifies some of the key functionality that the IT team needs to build. You are responsible for the mobile app.
+For the mobile app, create a story map to show the user experience and what you need to build. Feel free to add fictitious functionality and features as you feel appropriate. You will be graded on the quality, completeness, and correctness of your story map.
+Please make sure that your story map has all the functionality listed in mobile app section (section 18) in the case study.
+You may create the story map using any tool you wish (for example, LibreOffice Writer/Draw or Microsoft Word/Visio). Once finished, you will upload the document here.
+Ans.
+PDF Link to upload is given in Description please check!
+
+TITLE		Story Mapping
+
+CAPTION	Story Mapping

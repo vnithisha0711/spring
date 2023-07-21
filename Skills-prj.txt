@@ -1,0 +1,53 @@
+@Entity
+Skills-class name
+
+@Id
+@GeneratedValue(strategy)
+private Integer id;
+private Integer employeeId;
+private String name;
+private String description;
+private String proficiencyLevel;
+private Integer rating;
+
+(get set method)
+copy skills and paste into dto(name -SkillsDTO)
+repository-create interface with name SkillsRepository extends CrudRepository
+in service-create interface with name SkillsService
+(add skill,update,delete,getById,List with findAll()
+create serviceimpl with class name SkillsServiceImpl implements SkillsService
+add unimplemented methods
+@Service
+
+@Autowired
+addSkill-Skilss skills=new Skills();
+BeanUtils.copyProperties(skillsDTO,skills)
+repository.save(skills);
+return skillsDTO;
+
+similarly for update
+
+for delete - return true and repository.delete(skills);
+
+for getById - Optional<Skills> skill=repository.findById(id);
+              if(skill.isPresent()){
+                  SkillsDTO dto=new SkillsDTO();
+                  BeanUtils.copyProperties(skill.get(),dto);
+                  return dto;
+              }
+              throw new SkillsNotFoundException("Skills with id " +id+ " doenot exists");
+
+create in exceptions a class with name SkillNotFoundException 
+
+create a class in controller as SkillsController
+@RestController
+@RequestMapping("/api/skills");
+
+@Autowired
+private SkillsService service;
+
+@PostMapping
+public ResponseEntity<SkillsDTO> addSkill(@RequestBody SkillsDTO skillsDTO){
+    return ResponseEntity.ok(service.addSkill(skillsDTO));
+
+
